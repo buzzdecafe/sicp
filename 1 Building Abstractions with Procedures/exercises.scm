@@ -15,5 +15,5 @@
    )
   )
 
-
+(test "1.1 sum-sq-largest-2" 100 (sum-sq-largest-2 4 6 8))
 

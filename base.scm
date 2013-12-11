@@ -1,2 +1,3 @@
-(load "lib/test-manager/load.scm")
+(require-extension test)
+
 

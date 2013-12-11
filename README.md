@@ -11,6 +11,6 @@ Working my way through:
 >
 > First Edition, 1985, Fourth Printing 1986
 
-The exercises are written in [Guile](http://www.gnu.org/software/guile/): "an interpreter and compiler for the Scheme programming language, a clean and elegant dialect of Lisp."
+The exercises are written in [Chicken Scheme](http://www.call-cc.org), using the [test egg](http://wiki.call-cc.org/eggref/4/test).
 
 
