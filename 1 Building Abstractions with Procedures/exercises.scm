@@ -22,6 +22,9 @@
     ((and (<= z x) (<= z y)) (sum-squares x y))
    )
   )
-
 (test "1.3 sum-sq-largest-2" 100 (sum-sq-largest-2 4 6 8))
 
+; 1.4 a-plus-abs-b
+;
+; 1.5 normal vs applicative order
+;
