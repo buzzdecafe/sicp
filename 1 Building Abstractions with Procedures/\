@@ -66,36 +66,3 @@
 ;          eval p => p
 ;                    eval p => p
 ;                              eval p => p ...
-
-; 1.6
-(define (new-if predicate then-clause else-clause) (cond (predicate then-clause) (else else-clause))) 
-; The example recurs infinitely. The expression is evaluated in aplicative order, and since
-; the example `else-clause` calls `sqrt-iter`, it descends into that--that calls itself in its else-clause, and so 
-; it goes.
-
-; 1.7 
-(define (average x y) (/ (+ x y) 2)) 
-(define (improve guess x) (average guess (/ x guess))) 
-(define (good-enough? old-guess new-guess) 
-  (< (abs (- old-guess new-guess)) 0.001)) 
-(define (sqrt-iter old-guess new-guess x) 
-  (if (good-enough? old-guess new-guess) 
-    new-guess 
-    (sqrt-iter new-guess (improve new-guess x) x))) 
-(define (my-sqrt x) (sqrt-iter 1.0 0.5 x))
-
-(test "1.7 Newton's square roots" 0.0009 (square (my-sqrt 0.0009)))
-
-; 1.8
-; Newton's method for cube roots
-(define (approx-cube x y) (/ (+ (/ x (square y)) (* 2 y)) 3))
-(define (cube-iter old-guess new-guess x) 
-  (if (good-enough? old-guess new-guess) 
-    new-guess 
-    (cube-iter new-guess (approx-cube x new-guess) x))) 
-(define (my-cube-root x) (cube-iter 1.0 0.5 x))
-
-(define epsilon 0.0000001)
-(define (within-epsilon x y) (< (abs (- x y)) epsilon))
-(test "1.7 Newton's cube roots" #t (within-epsilon 3 (my-cube-root 27)))
-
