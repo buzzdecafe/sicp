@@ -97,5 +97,61 @@
 
 (define epsilon 0.0000001)
 (define (within-epsilon x y) (< (abs (- x y)) epsilon))
-(test "1.7 Newton's cube roots" #t (within-epsilon 3 (my-cube-root 27)))
+(test "1.8 Newton's cube roots" #t (within-epsilon 3 (my-cube-root 27)))
+
+; 1.9
+; As described, the procedures are recursive:
+; (+ 4 5)
+; (inc (+ 3 5)
+; (inc (inc (+ 2 5))
+; (inc (inc (inc (+ 1 5))))
+; (inc (inc (inc (inc (+ 0 5)))))
+; (inc (inc (inc (inc 5))))
+; (inc (inc (inc 6)))
+; (inc (inc 7))
+; (inc 8)
+; 9
+; ... likewise for dec version
+;
+
+; 1.10 Ackermann's function
+;
+(define (A x y) 
+  (cond ((= y 0) 0) 
+        ((= x 0) (* 2 y)) 
+        ((= y 1) 2) 
+        (else 
+          (A (- x 1) (A x (- y 1)))))) 
+
+(test "1.10 Ackermann 1 10" 1024 (A 1 10))
+(test "1.10 Ackermann 2 4" 65536 (A 2 4))
+(test "1.10 Ackermann 3 3" 65536 (A 3 3))
+
+(define (f n) (A 0 n))
+(test "1.10 f(n) -> 2n" 114 (f 57))
+(define (g n) (A 1 n))
+(test "1.10 g(n) -> 2^n" 32 (g 5))
+(define (h n) (A 2 n))
+(test "1.10 h(n) -> 2^{h(n-1)}" 65536 (h 4))
+
+
+; 1.11
+; f(n) = n if n < 3
+; f(n) = f(n-1) + 2f(n-2) + 3f(n-3) if n >= 3
+(define (f-recursive n) (
+                cond ((< n 3) n)
+                      ((>= n 3) (+ (f-recursive (- n 1)) (* 2 (f-recursive (- n 2))) (* 3 (f-recursive (- n 3)))))))
+
+
+(define (f-iter n1 n2 n3 n) 
+  (cond ((= n 0) n3)
+        ((= n 1) n2)
+        ((= n 2) n1)
+        (else (f-iter (+ n1 (* 2 n2) (* 3 n3)) n1 n2 (- n 1))))) 
+
+(define (f n) (f-iter  2 1 0 n))
+(test "1.11 tree recursion" 4489 (f 11))
+
+
+
 
