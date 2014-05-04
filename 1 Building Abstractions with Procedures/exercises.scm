@@ -153,5 +153,103 @@
 (test "1.11 tree recursion" 4489 (f 11))
 
 
+; 1.12
+; Pascal's triangle
+(define (pascals x y)
+  (cond ((= y 0) 1)
+        ((= x 0) 1)
+        ((= x y) 1)
+        ((> x y) 0)
+        (else (+ (pascals (- x 1) (- y 1)) (pascals x (- y 1))))))
+(test "1.12 Pascal's triangle (x: 7, y: 11)" 330 (pascals 7 11))
+
+; 1.13
+; Proof by induction that Fib(n) is closest int to \phi^n/5
+; where \phi = (1 + \sqrt{5})/2 \approx 1.618033987
+(define phi 1.618033987)
+(define psi (- 1 phi))
+; base cases n = 0, n = 1, n = 2: 
+; TODO: prove: (= (fib n) (/ (- (^ phi n) (^ psi n)) (- phi psi)))
+
+; 1.14
+(define (count-change amount) (cc amount 5))
+
+(define (cc amount kinds-of-coins)
+   (cond ((= amount 0) 1)
+         ((or (< amount 0) (= kinds-of-coins 0)) 0)
+         (else (+ (cc amount (- kinds-of-coins 1))
+                  (cc (- amount (first-denomination kinds-of-coins)) kinds-of-coins)))))
+                      
+(define (first-denomination kinds-of-coins)
+  (cond ((= kinds-of-coins 1) 1)
+        ((= kinds-of-coins 2) 5)
+        ((= kinds-of-coins 3) 10)
+        ((= kinds-of-coins 4) 25)
+        ((= kinds-of-coins 5) 50)))
+
+; a. the count-change procedure tree
+;    ... is much too deep and complex to do in ascii. so i drew it in my notebook.
+;
+; b. count-change is exponential in the kinds of coins. so to make change of 
+;    11 cents using 5 coins, the rate of growth is O(11^5). we must repeat the 
+;    subtree for each type of coin.
+;
+; 1.15 
+(define inc-pcounter-by #f) 
+(define inc-pcounter #f) 
+(define pcounter-value #f) 
+(let ((pcounter 0)) 
+  (set! inc-pcounter-by (lambda (n) (set! pcounter (+ pcounter n)))) 
+  (set! inc-pcounter (lambda () (inc-pcounter-by 1))) 
+  (set! pcounter-value (lambda () pcounter))) 
+
+(define (cube x) (* x x x)) 
+(define (do-pcount f) (inc-pcounter) f) 
+(define (p x) (- (* 3 x) (* 4 (cube x)))) 
+(define (sine angle) 
+  (if (not (> (abs angle) 0.1)) 
+      angle 
+      (do-pcount (p (sine (/ angle 3.0)))))) 
+; a. how many times is `p` applied when (sine 12.15)?
+(sine 12.15)
+(test "1.15.a `p` applications in (sine 12.15)" 5 (pcounter-value))
+
+;
+; b. Growth of (sine a)?
+;    i. in space: O(log n) 
+;    ii. in `steps`: O(log n) 
+
+; 1.16 fast-expt-iter
+; here is the recursive example:
+; (define (fast-expt b n) 
+;   (cond ((= n 0) 1) 
+;         ((even? n) (square (fast-expt b (/ n 2)))) 
+;         (else (* b (fast-expt b (- n 1))))))
+;
+(define (fast-expt-iter acc b n)
+  (cond ((= n 0) acc)
+        ((even? n) (fast-expt-iter acc (square b) (/ n 2)))
+        (else (fast-expt-iter (* acc b) b (- n 1)))))
+(define (fast-expt b n) (fast-expt-iter 1 b n))
+(test "1.16 fast-expt-iter" 8916100448256 (fast-expt 12 12))
+
+; 1.17 iterative multiplication
+(define (double x) (+ x x))
+(define (halve x) (/ x 2))
+(define (mult a b) 
+  (cond ((= 0 b) 0)
+        ((= 1 b) a)
+        ((even? b) (double (mult a (halve b))))
+        (else (+ a (mult a (- b 1))))))
+(test "1.17 mult in log(n)" 48 (mult 8 6))
+
+; 1.18 iterative process for multiplying
+(define (mult-iter acc a b)
+  (cond ((= 0 b) acc)
+        ((even? b) (mult-iter acc (double a) (halve b)))
+        (else (mult-iter (+ a acc) a (- b 1)))))
+(define (mul a b) (mult-iter 0 a b))
+(test "1.17 mul-iter" 1440 (mul 24 60))
+
 
 
