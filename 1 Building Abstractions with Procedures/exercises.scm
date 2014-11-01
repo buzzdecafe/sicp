@@ -244,12 +244,33 @@
 (test "1.17 mult in log(n)" 48 (mult 8 6))
 
 ; 1.18 iterative process for multiplying
-(define (mult-iter acc a b)
+(define (mult-iter a b acc)
   (cond ((= 0 b) acc)
-        ((even? b) (mult-iter acc (double a) (halve b)))
-        (else (mult-iter (+ a acc) a (- b 1)))))
-(define (mul a b) (mult-iter 0 a b))
-(test "1.17 mul-iter" 1440 (mul 24 60))
+        ((even? b) (mult-iter (double a) (halve b) acc))
+        (else (mult-iter a (- b 1)  (+ a acc)))))
+(define (mul a b) (mult-iter a b 0))
+(test "1.18 mul-iter" 1440 (mul 24 60))
 
-
+; 1.19 fibonacci in log time
+(define (fib-iter a b p q count) 
+  (cond ((= count 0) b) 
+        ((even? count) 
+         (fib-iter a 
+                   b  
+                   (+ (* p p) (* q q))  
+                   (+ (* 2 p q) (* q q))  
+                   (/ count 2))
+         ) 
+        (else 
+          (fib-iter (+ (* b q) (* a q) (* a p)) 
+                    (+ (* b p) (* a q)) 
+                    p 
+                    q 
+                    (- count 1))
+          )
+        )
+  ) 
+(define (fib n) 
+  (fib-iter 1 0 0 1 n)) 
+(test "1.19 fibonacci in log time" 354224848179261915075 (fib 100))
 
