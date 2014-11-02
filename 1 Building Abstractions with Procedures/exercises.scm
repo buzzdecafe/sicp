@@ -274,3 +274,8 @@
   (fib-iter 1 0 0 1 n)) 
 (test "1.19 fibonacci in log time" 354224848179261915075 (fib 100))
 
+; 1.20 normal vs applicative (GCD 206 40)
+; Normal: 18 remainder ops (unmemoized)
+; Applicative: 4 remainder ops
+;
+
